@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Component" ADD COLUMN     "installedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

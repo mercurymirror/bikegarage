@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -14,12 +15,39 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+    const prisma = app.get(PrismaService);
+    await prisma.ride.deleteMany({});
+    await prisma.component.deleteMany({});
+    await prisma.bike.deleteMany({});
+    await prisma.user.deleteMany({});
   });
 
-  it('/ (GET)', () => {
+  it('should register a user', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .post('/auth/register')
+      .send({
+        email: 'test@test.com',
+        password: 'password',
+      })
+      .expect(201);
+  });
+
+  it('should return access token on login', async () => {
+    await request(app.getHttpServer()).post('/auth/register').send({
+      email: 'test@test.com',
+      password: 'password',
+    });
+    await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: 'test@test.com',
+        password: 'password',
+      })
       .expect(200)
-      .expect('Hello World!');
+      .then((response) => {
+        expect(
+          (response.body as { accessToken: string }).accessToken,
+        ).toBeDefined();
+      });
   });
 });
