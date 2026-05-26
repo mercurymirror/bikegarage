@@ -40,12 +40,13 @@ export class ComponentsController {
   update(
     @Param('id') id: string,
     @Body() updateComponentDto: UpdateComponentDto,
+    @GetUser('id') userId: string,
   ) {
-    return this.componentsService.update(updateComponentDto, id);
+    return this.componentsService.update(updateComponentDto, id, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.componentsService.remove(id);
+  remove(@Param('id') id: string, @GetUser('id') userId: string) {
+    return this.componentsService.remove(id, userId);
   }
 }

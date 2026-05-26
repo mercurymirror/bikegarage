@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRideDto } from './dto/create-ride.dto';
 import { Ride } from '@prisma/client';
@@ -8,9 +12,9 @@ import { UpdateRideDto } from './dto/update-ride.dto';
 export class RidesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createBikeDto: CreateRideDto, bikeId: string): Promise<Ride> {
+  async create(createRideDto: CreateRideDto, bikeId: string): Promise<Ride> {
     return await this.prisma.ride.create({
-      data: { ...createBikeDto, bikeId },
+      data: { ...createRideDto, bikeId },
     });
   }
 
@@ -24,11 +28,21 @@ export class RidesService {
     return ride;
   }
 
-  async update(id: string, data: UpdateRideDto): Promise<Ride> {
+  async update(id: string, data: UpdateRideDto, userId: string): Promise<Ride> {
+    const ride = await this.findOne(id);
+    const bike = await this.prisma.bike.findUnique({
+      where: { id: ride.bikeId },
+    });
+    if (bike?.userId !== userId) throw new ForbiddenException('Access denied');
     return await this.prisma.ride.update({ where: { id }, data });
   }
 
-  async remove(id: string): Promise<Ride> {
+  async remove(id: string, userId: string): Promise<Ride> {
+    const ride = await this.findOne(id);
+    const bike = await this.prisma.bike.findUnique({
+      where: { id: ride.bikeId },
+    });
+    if (bike?.userId !== userId) throw new ForbiddenException('Access denied');
     return await this.prisma.ride.delete({ where: { id } });
   }
 }

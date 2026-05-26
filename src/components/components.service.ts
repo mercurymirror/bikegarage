@@ -36,14 +36,25 @@ export class ComponentsService {
   async update(
     updateComponentDto: UpdateComponentDto,
     id: string,
+    userId: string,
   ): Promise<Component> {
+    const component = await this.findOne(id);
+    const bike = await this.prisma.bike.findUnique({
+      where: { id: component.bikeId },
+    });
+    if (bike?.userId !== userId) throw new ForbiddenException('Access denied');
     return await this.prisma.component.update({
       where: { id },
       data: { ...updateComponentDto },
     });
   }
 
-  async remove(id: string): Promise<Component> {
+  async remove(id: string, userId: string): Promise<Component> {
+    const component = await this.findOne(id);
+    const bike = await this.prisma.bike.findUnique({
+      where: { id: component.bikeId },
+    });
+    if (bike?.userId !== userId) throw new ForbiddenException('Access denied');
     return await this.prisma.component.delete({ where: { id } });
   }
 

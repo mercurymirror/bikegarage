@@ -67,17 +67,21 @@ export class BikesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBikeDto: UpdateBikeDto) {
-    return this.bikesService.update(id, updateBikeDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateBikeDto: UpdateBikeDto,
+    @GetUser('id') userId: string,
+  ) {
+    return this.bikesService.update(id, updateBikeDto, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bikesService.remove(id);
+  remove(@Param('id') id: string, @GetUser('id') userId: string) {
+    return this.bikesService.remove(id, userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bikesService.findOne(id);
+  findOne(@Param('id') id: string, @GetUser('id') userId: string) {
+    return this.bikesService.findOne(id, userId);
   }
 }

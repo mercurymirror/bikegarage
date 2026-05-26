@@ -13,7 +13,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(200)
-  login(@Body() registerDto: AuthCredentialsDto) {
-    return this.authService.login(registerDto);
+  login(@Body() loginDto: AuthCredentialsDto) {
+    return this.authService.login(loginDto);
   }
 }

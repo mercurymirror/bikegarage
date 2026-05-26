@@ -25,6 +25,9 @@ export class AuthService {
           email,
           password: hashedPassword,
         },
+        omit: {
+          password: true,
+        },
       });
     } catch (error) {
       if (
