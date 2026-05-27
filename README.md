@@ -18,10 +18,24 @@ Conçue pour être utilisée aussi bien par un particulier que par un magasin ou
 - [NestJS](https://nestjs.com/) — framework Node.js
 - [Prisma](https://www.prisma.io/) — ORM
 - [PostgreSQL](https://www.postgresql.org/) — base de données
+- [Docker](https://www.docker.com/) — conteneurisation
 - JWT — authentification
 - Swagger — documentation API
 
-## Installation
+## Lancement avec Docker (recommandé)
+
+```bash
+# Configurer les variables d'environnement
+cp .env.example .env
+# Remplir JWT_SECRET dans .env
+
+# Lancer l'app et la base de données
+docker compose up
+```
+
+L'API est accessible sur `http://localhost:3000`.
+
+## Installation locale
 
 ```bash
 # Installer les dépendances
